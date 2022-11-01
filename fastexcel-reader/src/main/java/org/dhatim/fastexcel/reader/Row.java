@@ -42,6 +42,10 @@ public class Row implements Iterable<Cell> {
         return cells.get(index);
     }
 
+    public Cell getCell(String colName) {
+        return stream().filter(cell -> (colName == null ? cell.getColumnName() == null : colName.equals(cell.getColumnName()))).findFirst().get();
+    }
+
     public Cell getCell(CellAddress address) {
         if (rowNum != address.getRow()) {
             throw new IllegalArgumentException("The given address " + address + " concerns another row (" + rowNum + ")");

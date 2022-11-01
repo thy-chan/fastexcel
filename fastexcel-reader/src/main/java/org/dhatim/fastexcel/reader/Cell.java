@@ -53,13 +53,43 @@ public class Cell {
         return type;
     }
 
+    public CellAddress getAddress() {
+        return address;
+    }
+
+    /**
+     * get row index of this cell
+     * @return the row index (0 based)
+     */
+    public int getRowIndex() {
+        return address.getRow();
+    }
+
+    /**
+     * get col index of this cell
+     * @return the col index (0 based)
+     */
     public int getColumnIndex() {
         return address.getColumn();
     }
 
-    public CellAddress getAddress() {
-        return address;
+    /**
+     * get row number of this cell
+     * @return the row number (1 based)
+     */
+    public int getRowNum() {
+        return address.getRowNum();
     }
+
+    /**
+     * get col name of this cell
+     * @return the col name (1 based)
+     */
+    public String getColumnName() {
+        return address.getColumnName();
+    }
+
+
 
     public Object getValue() {
         return value;

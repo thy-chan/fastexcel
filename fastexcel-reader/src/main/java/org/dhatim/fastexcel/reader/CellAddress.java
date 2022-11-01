@@ -16,6 +16,7 @@
 package org.dhatim.fastexcel.reader;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
 
 public final class CellAddress implements Comparable<CellAddress> {
@@ -69,6 +70,14 @@ public final class CellAddress implements Comparable<CellAddress> {
 
     public int getColumn() {
         return col;
+    }
+
+    public int getRowNum() {
+        return row + 1;
+    }
+
+    public String getColumnName() {
+        return convertNumToColString(this.col);
     }
 
     @Override
@@ -132,6 +141,20 @@ public final class CellAddress implements Comparable<CellAddress> {
         return new String(colRef, pos, (MAX_COL_CHARS - pos), StandardCharsets.ISO_8859_1);
     }
 
+    public static int convertColStringToNum(String colName) {
+        int offset = colName.charAt(0) == ABSOLUTE_REFERENCE_MARKER ? 1 : 0;
+        int col = 0;
+        for (; offset < colName.length(); offset++) {
+            final char c = colName.charAt(offset);
+            if (c == ABSOLUTE_REFERENCE_MARKER) {
+                offset++;
+                break;
+            }
+            col = col * COL_RADIX + toUpperCase(c) - (int) 'A' + 1;
+         }
+        return col - 1;
+    }
+
 
     private static final boolean isAsciiLowerCase(char c) {
         return 'a' <= c && c <= 'z';
@@ -153,6 +176,23 @@ public final class CellAddress implements Comparable<CellAddress> {
             return (char) (c + ('A' - 'a'));
         }
         throw new IllegalArgumentException("Unexpected char: " + c);
+    }
+
+    public static final void validColumnName(String... columnNames) {
+        if (null == columnNames || columnNames.length == 0) {
+            throw new IllegalArgumentException("the columnName is blank");
+        }
+        Arrays.stream(columnNames).forEachOrdered(columnName -> {
+            if (null == columnNames || columnNames.length == 0) {
+                throw new IllegalArgumentException("the columnName is blank");
+            }
+            for (char c : columnName.toCharArray()) {
+                if (!isAsciiLowerCase(c) && !isAsciiUpperCase(c)) {
+                    throw new IllegalArgumentException("the columnName[" + columnName +"] contain unexpected char: " + c);
+                }
+
+            }
+        });
     }
 
 }
